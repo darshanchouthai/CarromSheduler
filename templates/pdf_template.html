@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ tournament.id }} - Overview</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+        h2 {
+            background-color: #f2f2f2;
+            padding: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        th, td {
+            border: 1px solid #333;
+            padding: 6px;
+            text-align: left;
+        }
+        th {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h2>Teams</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Team Name</th>
+                <th>Players</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for team in tournament.teams %}
+            <tr>
+                <td>{{ team.name }}</td>
+                <td>{{ team.players | join(', ') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Match Schedule</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Match #</th>
+                <th>Team 1</th>
+                <th>Team 2</th>
+                <th>Status</th>
+                <th>Winner</th>
+                <th>Won with Queen</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for match in tournament.matches %}
+            <tr>
+                <td>{{ match.id }}</td>
+                <td>{{ match.team1 }}</td>
+                <td>{{ match.team2 }}</td>
+                <td>{{ match.status }}</td>
+                <td>{{ match.winner or '' }}</td>
+                <td>{{ 'Yes' if match.won_with_queen else 'No' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

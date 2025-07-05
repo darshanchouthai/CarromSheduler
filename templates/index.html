@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrom Tournament Scheduler</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            --secondary-gradient: linear-gradient(135deg, #134e5e 0%, #71b280 100%);
+            --success-gradient: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            --accent-gradient: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            --box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            --box-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.1) 2px, transparent 2px),
+                radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+                radial-gradient(circle at 40% 80%, rgba(255, 255, 255, 0.05) 3px, transparent 3px);
+            background-size: 100px 100px, 150px 150px, 200px 200px;
+            animation: float 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) translateX(0px) rotate(0deg); }
+            25% { transform: translateY(-10px) translateX(5px) rotate(1deg); }
+            50% { transform: translateY(0px) translateX(-5px) rotate(-1deg); }
+            75% { transform: translateY(10px) translateX(5px) rotate(1deg); }
+        }
+
+        /* Header */
+        .header {
+            position: relative;
+            z-index: 10;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1rem 0;
+            box-shadow: var(--box-shadow);
+        }
+
+        .header h1 {
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #ffffff, #f8f9fa, #e9ecef);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: var(--text-shadow);
+            margin: 0;
+            letter-spacing: 2px;
+        }
+
+        .header .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            font-weight: 300;
+            margin-top: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .header-icon {
+            font-size: 3rem;
+            background: var(--success-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Main container */
+        .main-container {
+            position: relative;
+            z-index: 5;
+            padding: 3rem 0;
+        }
+
+        .tournament-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: var(--box-shadow);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .tournament-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--box-shadow-hover);
+        }
+
+        .card-header-custom {
+            background: var(--primary-gradient);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header-custom::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .tournament-card:hover .card-header-custom::before {
+            left: 100%;
+        }
+
+        .card-title {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin: 0;
+            text-shadow: var(--text-shadow);
+        }
+
+        .card-body-custom {
+            padding: 2.5rem;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Form styles */
+        .form-label {
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            text-shadow: var(--text-shadow);
+        }
+
+        .form-label i {
+            margin-right: 0.5rem;
+            color: #feca57;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #71b280;
+            box-shadow: 0 0 0 0.2rem rgba(113, 178, 128, 0.25);
+            color: white;
+        }
+
+        .form-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Buttons */
+        .btn-primary-custom {
+            background: var(--success-gradient);
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary-custom::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-primary-custom:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(238, 90, 36, 0.4);
+        }
+
+        .btn-secondary-custom {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 0.8rem 1.5rem;
+            color: white;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary-custom:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        /* Alert styles */
+        .alert {
+            border-radius: 12px;
+            border: none;
+            backdrop-filter: blur(20px);
+            margin-bottom: 1.5rem;
+        }
+
+        .alert-success {
+            background: rgba(113, 178, 128, 0.2);
+            color: #71b280;
+            border: 1px solid rgba(113, 178, 128, 0.3);
+        }
+
+        .alert-danger {
+            background: rgba(245, 87, 108, 0.2);
+            color: #f5576c;
+            border: 1px solid rgba(245, 87, 108, 0.3);
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .header-icon {
+                font-size: 2.5rem;
+            }
+            
+            .card-body-custom {
+                padding: 2rem;
+            }
+            
+            .main-container {
+                padding: 2rem 0;
+            }
+        }
+
+        /* Loading animation */
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .btn-primary-custom.loading .loading-spinner {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="text-center">
+                <i class="fas fa-chess-board header-icon"></i>
+                <h1>CarromPro Scheduler</h1>
+                <p class="subtitle">Professional Tournament Management System</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="tournament-card">
+                        <div class="card-header-custom">
+                            <h2 class="card-title">Create Tournament</h2>
+                        </div>
+                        <div class="card-body-custom">
+                            <!-- Flash Messages -->
+                            {% with messages = get_flashed_messages(with_categories=true) %}
+                                {% if messages %}
+                                    {% for category, message in messages %}
+                                        <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                                            {{ message }}
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endwith %}
+
+                            <!-- Tournament Form -->
+                            <form method="POST" action="{{ url_for('create_tournament') }}" id="tournamentForm">
+                                <div class="mb-4">
+                                    <label for="players" class="form-label">
+                                        <i class="fas fa-users"></i>Player Names
+                                    </label>
+                                    <textarea class="form-control" id="players" name="players" rows="3"
+                                             placeholder="Enter player names separated by commas (e.g., John, Jane, Bob, Alice)" required></textarea>
+                                    <div class="form-text">Enter an even number of players (minimum 4)</div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="matches_per_team" class="form-label">
+                                        <i class="fas fa-trophy"></i>Matches per Team
+                                    </label>
+                                    <input type="number" class="form-control" id="matches_per_team" name="matches_per_team"
+                                           min="1" max="20" value="2" required>
+                                    <div class="form-text">How many matches should each team play?</div>
+                                </div>
+
+                                <div class="d-grid mb-4">
+                                    <button type="submit" class="btn btn-primary-custom" id="submitBtn">
+                                        <span class="loading-spinner"></span>
+                                        <i class="fas fa-play me-2"></i>Create Tournament
+                                    </button>
+                                </div>
+                            </form>
+
+                            <!-- View Tournaments Link -->
+                            <div class="text-center">
+                                <a href="{{ url_for('list_tournaments') }}" class="btn btn-secondary-custom">
+                                    <i class="fas fa-history me-2"></i>View All Tournaments
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Form submission with loading state
+        document.getElementById('tournamentForm').addEventListener('submit', function() {
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+        });
+
+        // Form validation
+        document.getElementById('players').addEventListener('input', function() {
+            const players = this.value.split(',').map(name => name.trim()).filter(name => name);
+            const isValid = players.length >= 4 && players.length % 2 === 0;
+            
+            if (!isValid && this.value.trim()) {
+                this.setCustomValidity('Please enter an even number of players (minimum 4)');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+
+        // Auto-dismiss alerts
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                if (alert.classList.contains('show')) {
+                    alert.classList.remove('show');
+                    setTimeout(function() {
+                        alert.remove();
+                    }, 150);
+                }
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

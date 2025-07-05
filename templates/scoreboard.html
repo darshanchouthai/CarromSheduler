@@ -1,0 +1,778 @@
+{% extends "base.html" %}
+
+{% block title %}Tournament Scoreboard{% endblock %}
+
+{% block content %}
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: #2d3748;
+        line-height: 1.6;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    /* Header Section */
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: white;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+
+    .btn-secondary {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        backdrop-filter: blur(10px);
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+        color: white;
+    }
+
+    /* Card Styling */
+    .card {
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        overflow: hidden;
+        margin-bottom: 2rem;
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .card-header {
+        padding: 1.5rem;
+        font-weight: 600;
+        font-size: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0;
+    }
+
+    .card-header.bg-warning {
+        background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+        color: #2d3748;
+    }
+
+    .card-header.bg-info {
+        background: linear-gradient(135deg, #74b9ff, #0984e3);
+        color: white;
+    }
+
+    .card-header.bg-secondary {
+        background: linear-gradient(135deg, #636e72, #2d3436);
+        color: white;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    /* Table Styling */
+    .table-responsive {
+        overflow-x: auto;
+        border-radius: 12px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e0 #f7fafc;
+    }
+
+    .table-responsive::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        background: #f7fafc;
+        border-radius: 4px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #cbd5e0;
+        border-radius: 4px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb:hover {
+        background: #a0aec0;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 0;
+    }
+
+    .table-dark {
+        background: linear-gradient(135deg, #2d3436, #636e72);
+        color: white;
+    }
+
+    .table th,
+    .table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #e2e8f0;
+        vertical-align: middle;
+    }
+
+    .table th {
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .table tbody tr {
+        transition: all 0.3s ease;
+    }
+
+    .table tbody tr:hover {
+        background: linear-gradient(135deg, #f8f9ff, #e8f4f8);
+        transform: scale(1.02);
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(0,0,0,0.02);
+    }
+
+    /* Rank Styling */
+    .rank-1 {
+        background: linear-gradient(135deg, #ffeaa7, #fdcb6e) !important;
+        font-weight: 600;
+    }
+
+    .rank-2 {
+        background: linear-gradient(135deg, #ddd6fe, #c7d2fe) !important;
+        font-weight: 600;
+    }
+
+    .rank-3 {
+        background: linear-gradient(135deg, #fed7aa, #fdba74) !important;
+        font-weight: 600;
+    }
+
+    /* Trophy Icons */
+    .trophy-gold {
+        color: #f39c12;
+        filter: drop-shadow(0 2px 4px rgba(243,156,18,0.3));
+    }
+
+    .trophy-silver {
+        color: #95a5a6;
+        filter: drop-shadow(0 2px 4px rgba(149,165,166,0.3));
+    }
+
+    .trophy-bronze {
+        color: #d35400;
+        filter: drop-shadow(0 2px 4px rgba(211,84,0,0.3));
+    }
+
+    /* Badges */
+    .badge {
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        display: inline-block;
+    }
+
+    .badge.bg-success {
+        background: linear-gradient(135deg, #00b894, #00a085);
+        color: white;
+    }
+
+    .badge.bg-warning {
+        background: linear-gradient(135deg, #fdcb6e, #e17055);
+        color: white;
+    }
+
+    /* Scoring System */
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -15px;
+    }
+
+    .col-12 {
+        flex: 0 0 100%;
+        padding: 0 15px;
+    }
+
+    .col-md-6 {
+        flex: 0 0 50%;
+        padding: 0 15px;
+    }
+
+    .scoring-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .scoring-item {
+        background: rgba(255,255,255,0.5);
+        padding: 1.5rem;
+        border-radius: 12px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .scoring-item:hover {
+        transform: translateY(-5px);
+        background: rgba(255,255,255,0.8);
+    }
+
+    .scoring-item i {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .scoring-item h6 {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        color: #2d3748;
+    }
+
+    .scoring-item p {
+        color: #718096;
+        font-size: 0.9rem;
+    }
+
+    /* Match History */
+    .table-sm td {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .card {
+        animation: fadeInUp 0.6s ease;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+        .container {
+            padding: 1.5rem;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .container {
+            padding: 1rem;
+        }
+
+        .header {
+            gap: 1.5rem;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+        }
+
+        .table th,
+        .table td {
+            padding: 0.8rem;
+            font-size: 0.9rem;
+        }
+
+        .card-body {
+            padding: 1.2rem;
+        }
+
+        .scoring-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 0.5rem;
+        }
+
+        .header {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+        }
+
+        .header-actions {
+            flex-direction: column;
+            width: 100%;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            justify-content: center;
+            padding: 0.8rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .card {
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            padding: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .card-body {
+            padding: 1rem;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table {
+            min-width: 600px;
+        }
+
+        .table th,
+        .table td {
+            padding: 0.6rem 0.4rem;
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+
+        .table th:first-child,
+        .table td:first-child {
+            position: sticky;
+            left: 0;
+            background: inherit;
+            z-index: 1;
+        }
+
+        .table-dark th:first-child {
+            background: linear-gradient(135deg, #2d3436, #636e72);
+        }
+
+        .rank-1 td:first-child {
+            background: linear-gradient(135deg, #ffeaa7, #fdcb6e) !important;
+        }
+
+        .rank-2 td:first-child {
+            background: linear-gradient(135deg, #ddd6fe, #c7d2fe) !important;
+        }
+
+        .rank-3 td:first-child {
+            background: linear-gradient(135deg, #fed7aa, #fdba74) !important;
+        }
+
+        .badge {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.7rem;
+        }
+
+        .col-md-6 {
+            flex: 0 0 100%;
+        }
+
+        .scoring-item {
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .scoring-item i {
+            font-size: 1.5rem;
+        }
+
+        .scoring-item h6 {
+            font-size: 1rem;
+        }
+
+        .scoring-item p {
+            font-size: 0.85rem;
+        }
+
+        .table-sm td {
+            padding: 0.5rem 0.3rem;
+            font-size: 0.75rem;
+        }
+
+        .text-muted {
+            font-size: 0.7rem !important;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .container {
+            padding: 0.25rem;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .header h1 i {
+            font-size: 1.2rem;
+        }
+
+        .btn {
+            padding: 0.7rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        .card {
+            border-radius: 15px;
+        }
+
+        .card-header {
+            padding: 0.8rem;
+            font-size: 1rem;
+        }
+
+        .card-body {
+            padding: 0.8rem;
+        }
+
+        .table {
+            min-width: 500px;
+        }
+
+        .table th,
+        .table td {
+            padding: 0.5rem 0.3rem;
+            font-size: 0.75rem;
+        }
+
+        .table th {
+            font-size: 0.7rem;
+        }
+
+        .badge {
+            padding: 0.2rem 0.4rem;
+            font-size: 0.65rem;
+        }
+
+        .trophy-gold,
+        .trophy-silver,
+        .trophy-bronze {
+            font-size: 0.8rem;
+        }
+
+        .scoring-item {
+            padding: 0.8rem;
+            border-radius: 10px;
+        }
+
+        .scoring-item i {
+            font-size: 1.2rem;
+        }
+
+        .scoring-item h6 {
+            font-size: 0.9rem;
+        }
+
+        .scoring-item p {
+            font-size: 0.8rem;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .header h1 {
+            font-size: 1.3rem;
+        }
+
+        .table {
+            min-width: 450px;
+        }
+
+        .table th,
+        .table td {
+            padding: 0.4rem 0.2rem;
+            font-size: 0.7rem;
+        }
+
+        .btn {
+            padding: 0.6rem;
+            font-size: 0.75rem;
+        }
+
+        .card-header {
+            padding: 0.6rem;
+            font-size: 0.9rem;
+        }
+
+        .card-body {
+            padding: 0.6rem;
+        }
+    }
+
+    /* Text Colors */
+    .text-primary {
+        color: #4facfe !important;
+        font-weight: 600;
+    }
+
+    .text-muted {
+        color: #718096 !important;
+    }
+
+    .text-success {
+        color: #00b894 !important;
+    }
+
+    .text-warning {
+        color: #fdcb6e !important;
+    }
+
+    .text-white {
+        color: white !important;
+    }
+
+    .text-dark {
+        color: #2d3748 !important;
+    }
+
+    /* Utility Classes */
+    .me-1 { margin-right: 0.25rem; }
+    .me-2 { margin-right: 0.5rem; }
+    .ms-2 { margin-left: 0.5rem; }
+    .mb-0 { margin-bottom: 0; }
+    .mb-4 { margin-bottom: 1.5rem; }
+    .mt-4 { margin-top: 1.5rem; }
+
+    .d-flex { display: flex; }
+    .justify-content-between { justify-content: space-between; }
+    .align-items-center { align-items: center; }
+
+    /* Enhanced hover effects */
+    .table tbody tr:hover .badge {
+        transform: scale(1.1);
+    }
+
+    .table tbody tr:hover .trophy-gold,
+    .table tbody tr:hover .trophy-silver,
+    .table tbody tr:hover .trophy-bronze {
+        transform: scale(1.2) rotate(5deg);
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4 header">
+                <h1 class="text-white">
+                    <i class="fas fa-trophy me-2"></i>Tournament Scoreboard
+                </h1>
+                <div class="header-actions">
+                    <a href="{{ url_for('tournament_dashboard', tournament_id=tournament.id) }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>Back to Tournament
+                    </a>
+                    <a href="{{ url_for('download_scoreboard', tournament_id=tournament.id) }}" class="btn btn-danger">
+                        <i class="fas fa-download me-1"></i>Download Scoreboard PDF
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="fas fa-medal me-2"></i>Final Standings</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Team</th>
+                                    <th>Players</th>
+                                    <th>Regular Wins</th>
+                                    <th>Queen Wins</th>
+                                    <th>Total Points</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for team_name, stats in sorted_scoreboard %}
+                                    {% set team_info = tournament.teams|selectattr('name', 'equalto', team_name)|first %}
+                                    <tr class="{{ 'rank-1' if loop.index == 1 else 'rank-2' if loop.index == 2 else 'rank-3' if loop.index == 3 else '' }}">
+                                        <td>
+                                            <strong>{{ loop.index }}</strong>
+                                            {% if loop.index == 1 %}
+                                                <i class="fas fa-trophy trophy-gold ms-2"></i>
+                                            {% elif loop.index == 2 %}
+                                                <i class="fas fa-trophy trophy-silver ms-2"></i>
+                                            {% elif loop.index == 3 %}
+                                                <i class="fas fa-trophy trophy-bronze ms-2"></i>
+                                            {% endif %}
+                                        </td>
+                                        <td><strong>{{ team_name }}</strong></td>
+                                        <td>{{ team_info.players|join(', ') }}</td>
+                                        <td>
+                                            <span class="badge bg-success">{{ stats.wins }}</span>
+                                            <small class="text-muted">({{ stats.wins }} pts)</small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-warning">{{ stats.queen_wins }}</span>
+                                            <small class="text-muted">({{ stats.queen_wins * 1.5 }} pts)</small>
+                                        </td>
+                                        <td><strong class="text-primary">{{ stats.total_points }}</strong></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Scoring System</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="scoring-item">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <h6>Regular Win</h6>
+                                <p class="text-muted">1 point for winning a match</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="scoring-item">
+                                <i class="fas fa-crown text-warning me-2"></i>
+                                <h6>Win with Queen</h6>
+                                <p class="text-muted">1.5 points for winning with the Queen</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="fas fa-history me-2"></i>Match History</h5>
+                </div>
+                <div class="card-body">
+                    {% if tournament.completed_matches %}
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Match</th>
+                                        <th>Teams</th>
+                                        <th>Winner</th>
+                                        <th>Result Type</th>
+                                        <th>Points</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for match in tournament.completed_matches %}
+                                        <tr>
+                                            <td>{{ match.id }}</td>
+                                            <td>{{ match.team1 }} vs {{ match.team2 }}</td>
+                                            <td><strong>{{ match.winner }}</strong></td>
+                                            <td>
+                                                {% if match.won_with_queen %}
+                                                    <span class="badge bg-warning">With Queen</span>
+                                                {% else %}
+                                                    <span class="badge bg-success">Regular</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ '1.5' if match.won_with_queen else '1' }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No matches completed yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
