@@ -5,34 +5,18 @@
 {% block content %} 
 <style>
     :root {
-        --primary-gradient: linear-gradient(135deg,#667eea 0%, #764ba2 100%);
-        --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        --warning-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        --info-gradient: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-        --dark-gradient: linear-gradient(135deg, #232526 0%, #414345 100%);
+        --primary-color: #667eea;
+        --secondary-color: #764ba2;
+        --accent-color: #ffd700;
         --glass-bg: rgba(255, 255, 255, 0.05);
         --glass-border: rgba(255, 255, 255, 0.1);
-        --shadow-light: 0 8px 32px rgba(31, 38, 135, 0.15);
-        --shadow-heavy: 0 15px 35px rgba(31, 38, 135, 0.3);
-        --border-radius: 20px;
-        --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    /* Global body styling */
     body {
-        background: linear-gradient(135deg, 
-#0c0c0c 0%, 
-#1a1a2e 25%, 
-#16213e 50%, 
-#0f3460 75%, 
-#1a1a2e 100%);
+        background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #1a1a2e 100%);
         background-attachment: fixed;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         color: #ffffff;
         min-height: 100vh;
-        position: relative;
-        overflow-x: hidden;
     }
 
     body::before {
@@ -44,426 +28,186 @@
         height: 100%;
         background: 
             radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.05) 0%, transparent 50%);
+            radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%);
         pointer-events: none;
         z-index: -1;
     }
 
-    .container {
-        max-width: 1400px;
-        position: relative;
-        z-index: 1;
+    /* Glass morphism cards */
+    .glass-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--glass-border);
+        border-radius: 15px;
+        transition: all 0.3s ease;
     }
 
-    /* Enhanced typography */
-    h1, h2, h3, h4, h5, h6 {
-        font-weight: 700;
-        letter-spacing: -0.02em;
-        line-height: 1.2;
-    }
-
-    h1 {
-        font-size: 2.5rem;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
-    }
-
-    h1 i, h5 i {
-        color: #ffd700;
-        filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
-        transition: var(--transition);
-    }
-
-    h1 i:hover, h5 i:hover {
-        transform: rotate(15deg) scale(1.1);
-        filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+    .glass-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     }
 
     /* Enhanced buttons */
-    .btn {
+    .btn-gradient-primary {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
         border: none;
-        border-radius: 15px;
+        color: white;
         font-weight: 600;
-        padding: 12px 24px;
-        font-size: 0.95rem;
-        letter-spacing: 0.02em;
-        transition: var(--transition);
-        position: relative;
-        overflow: hidden;
-        box-shadow: var(--shadow-light);
-    }
-
-    .btn::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-        transition: left 0.5s;
-    }
-
-    .btn:hover::before {
-        left: 100%;
-    }
-
-    .btn-warning {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        color: #ffffff;
-        box-shadow: 0 8px 20px rgba(240, 147, 251, 0.4);
-    }
-
-    .btn-warning:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 25px rgba(240, 147, 251, 0.6);
-        color: #ffffff;
-    }
-
-    .btn-outline-light {
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        color: #ffffff;
-        background: var(--glass-bg);
-        backdrop-filter: blur(10px);
-    }
-
-    .btn-outline-light:hover {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: rgba(255, 255, 255, 0.5);
-        transform: translateY(-2px);
-        color: #ffffff;
-    }
-
-    .btn-secondary {
-        background: var(--dark-gradient);
-        color: #ffffff;
-        box-shadow: 0 8px 20px rgba(35, 37, 38, 0.4);
-    }
-
-    .btn-secondary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 25px rgba(35, 37, 38, 0.6);
-        color: #ffffff;
-    }
-
-    .btn-success {
-        background: var(--success-gradient);
-        color: #ffffff;
-        box-shadow: 0 8px 20px rgba(79, 172, 254, 0.4);
-    }
-
-    .btn-success:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 25px rgba(79, 172, 254, 0.6);
-        color: #ffffff;
-    }
-
-    .btn-sm {
-        padding: 8px 16px;
-        font-size: 0.85rem;
         border-radius: 10px;
+        transition: all 0.3s ease;
     }
 
-    /* Enhanced card styling */
-    .card {
-        border-radius: var(--border-radius);
-        background: var(--glass-bg);
-        backdrop-filter: blur(20px);
-        border: 1px solid var(--glass-border);
-        box-shadow: var(--shadow-heavy);
-        transition: var(--transition);
-        position: relative;
-        overflow: hidden;
+    .btn-gradient-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        color: white;
     }
 
-    .card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    }
-
-    .card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 20px 40px rgba(31, 38, 135, 0.4);
-        border-color: rgba(255, 255, 255, 0.2);
-    }
-
-    .card-header {
-        border-radius: var(--border-radius) var(--border-radius) 0 0;
-        font-weight: 700;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-        font-size: 0.9rem;
-        padding: 1.25rem 1.5rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .card-header.bg-primary {
-        background: var(--primary-gradient) !important;
-        color: #ffffff;
-    }
-
-    .card-header.bg-success {
-        background: var(--success-gradient) !important;
-        color: #ffffff;
-    }
-
-    .card-header.bg-info {
-        background: var(--info-gradient) !important;
-        color: #1a1a2e;
-        font-weight: 800;
-    }
-
-    .card-body {
-        padding: 1.5rem;
-    }
-
-    /* Enhanced team badges */
-    .team-badge {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: #ffffff;
-        padding: 0.6em 1.2em;
-        border-radius: 25px;
+    .btn-gradient-warning {
+        background: linear-gradient(135deg, #f093fb, #f5576c);
+        border: none;
+        color: white;
         font-weight: 600;
-        font-size: 0.95rem;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        transition: var(--transition);
-        display: inline-block;
-        position: relative;
-        overflow: hidden;
+        border-radius: 10px;
+        transition: all 0.3s ease;
     }
 
-    .team-badge::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-        transition: left 0.5s;
+    .btn-gradient-warning:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(240, 147, 251, 0.4);
+        color: white;
     }
 
-    .team-badge:hover::before {
-        left: 100%;
+    .btn-gradient-success {
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+        border: none;
+        color: white;
+        font-weight: 600;
+        border-radius: 10px;
+        transition: all 0.3s ease;
     }
 
-    .team-badge:hover {
-        transform: translateY(-2px) scale(1.05);
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+    .btn-gradient-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(79, 172, 254, 0.4);
+        color: white;
     }
 
-    /* Enhanced stats numbers */
-    .card-body .row h4 {
-        font-size: 3rem;
-        font-weight: 800;
-        margin-bottom: 0.5rem;
-        letter-spacing: -0.02em;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    /* Title styling */
+    .gradient-title {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
-        text-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        font-weight: 700;
     }
 
-    .card-body .row small {
-        font-size: 0.85rem;
-        color: rgba(255, 255, 255, 0.7);
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
+    /* Team badges */
+    .team-badge {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        border-radius: 20px;
+        padding: 0.5rem 1rem;
         font-weight: 600;
+        transition: all 0.3s ease;
     }
 
-    /* Enhanced table styling */
-    .table-responsive {
-        border-radius: var(--border-radius);
-        overflow: hidden;
-        box-shadow: var(--shadow-heavy);
+    .team-badge:hover {
+        transform: scale(1.05);
+    }
+
+    /* Golden accent */
+    .golden-icon {
+        color: var(--accent-color);
+        filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.5));
+    }
+
+    /* Table styling */
+    .table-glass {
         background: var(--glass-bg);
-        backdrop-filter: blur(20px);
-        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        overflow: hidden;
     }
 
-    table.table {
-        background: transparent;
-        margin-bottom: 0;
-        color: #ffffff;
-    }
-
-    thead.table-dark {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: #ffffff;
-        font-weight: 700;
-        font-size: 0.9rem;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-    }
-
-    thead th {
-        padding: 1.25rem 1rem;
+    .table-glass th {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
         border: none;
-        position: relative;
-    }
-
-    tbody tr {
-        transition: var(--transition);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    tbody td {
-        padding: 1rem;
-        border: none;
-        vertical-align: middle;
-    }
-
-    tbody tr.match-scheduled:hover {
-        background: rgba(255, 255, 255, 0.05);
-        transform: translateX(5px);
-    }
-
-    tbody tr.match-completed {
-        background: rgba(79, 172, 254, 0.1);
-        border-left: 4px solid #4facfe;
-    }
-
-    tbody tr.match-completed:hover {
-        background: rgba(79, 172, 254, 0.15);
-        transform: translateX(5px);
-    }
-
-    /* Enhanced badges */
-    .badge {
+        color: white;
         font-weight: 600;
+        text-transform: uppercase;
         font-size: 0.85rem;
-        padding: 0.5em 0.8em;
-        border-radius: 12px;
-        letter-spacing: 0.02em;
-        transition: var(--transition);
+        letter-spacing: 0.5px;
     }
 
-    .badge.bg-primary {
-        background: var(--primary-gradient) !important;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-    }
-
-    .badge.bg-success {
-        background: var(--success-gradient) !important;
-        box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
-    }
-
-    .badge.bg-warning {
-        background: var(--warning-gradient) !important;
-        color: #ffffff;
-        box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
-    }
-
-    .badge:hover {
-        transform: translateY(-1px) scale(1.05);
-    }
-
-    /* Enhanced modal styling */
-    .modal-content {
-        background: rgba(26, 26, 46, 0.95);
-        backdrop-filter: blur(20px);
-        color: #ffffff;
-        border-radius: var(--border-radius);
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .modal-header {
+    .table-glass td {
+        border: none;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        vertical-align: middle;
+        color: white;
+    }
+
+    .table-glass tbody tr:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Form styling */
+    .form-container {
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--glass-border);
+        border-radius: 15px;
         padding: 1.5rem;
-    }
-
-    .modal-body {
-        padding: 1.5rem;
-    }
-
-    .modal-footer {
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        padding: 1.5rem;
-    }
-
-    .modal-title {
-        font-weight: 700;
-        color: #ffffff;
-    }
-
-    .form-check-label {
-        cursor: pointer;
-        color: #ffffff;
-        font-weight: 500;
-    }
-
-    .form-check-input {
-        background-color: rgba(255, 255, 255, 0.1);
-        border: 2px solid rgba(255, 255, 255, 0.3);
+        margin: 1rem 0;
     }
 
     .form-check-input:checked {
-        background-color: #667eea;
-        border-color: #667eea;
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
     }
 
-    .form-label {
-        color: #ffffff;
-        font-weight: 600;
-        margin-bottom: 1rem;
+    .form-check-label {
+        color: white;
+        font-weight: 500;
     }
 
-    /* Enhanced alert styling */
-    .alert {
-        border-radius: 15px;
-        border: none;
-        font-weight: 600;
-        padding: 1rem 1.5rem;
-        margin-bottom: 1.5rem;
-        position: relative;
-        overflow: hidden;
+    /* Stats numbers */
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
 
-    .alert::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 4px;
-        height: 100%;
-        background: rgba(255, 255, 255, 0.3);
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .stat-number {
+            font-size: 2rem;
+        }
+        
+        .gradient-title {
+            font-size: 1.8rem;
+        }
     }
 
-    .alert-danger {
-        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-        color: #ffffff;
-        box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
-    }
-
-    .alert-success {
-        background: var(--success-gradient);
-        color: #ffffff;
-        box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
-    }
-
-    /* Enhanced scrollbar */
+    /* Fix for table responsiveness */
     .table-responsive {
-        max-height: 500px;
-        overflow-y: auto;
+        border-radius: 15px;
+        max-height: none;
     }
 
+    @media (min-width: 992px) {
+        .table-responsive {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+    }
+
+    /* Custom scrollbar for larger screens */
     .table-responsive::-webkit-scrollbar {
         width: 8px;
-        background: transparent;
     }
 
     .table-responsive::-webkit-scrollbar-track {
@@ -472,326 +216,58 @@
     }
 
     .table-responsive::-webkit-scrollbar-thumb {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
         border-radius: 10px;
-        transition: var(--transition);
-    }
-
-    .table-responsive::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-    }
-
-    /* Responsive design */
-    @media (max-width: 768px) {
-        h1 {
-            font-size: 2rem;
-        }
-        
-        .card-body .row h4 {
-            font-size: 2.5rem;
-        }
-        
-        .btn {
-            font-size: 0.9rem;
-            padding: 10px 20px;
-        }
-        
-        .card-header {
-            font-size: 0.85rem;
-        }
-        
-        .team-badge {
-            font-size: 0.85rem;
-            padding: 0.5em 1em;
-        }
-        
-        .table-responsive {
-            font-size: 0.9rem;
-        }
-        
-        .modal-content {
-            margin: 1rem;
-        }
-    }
-
-    @media (max-width: 576px) {
-        .container {
-            padding: 0 1rem;
-        }
-        
-        .d-flex.justify-content-between {
-            flex-direction: column;
-            gap: 1rem;
-        }
-        
-        .btn-group {
-            width: 100%;
-        }
-        
-        .btn {
-            width: 100%;
-            margin-bottom: 0.5rem;
-        }
-    }
-
-    /* Animation keyframes */
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .card {
-        animation: fadeInUp 0.6s ease-out;
-    }
-
-    .card:nth-child(1) { animation-delay: 0.1s; }
-    .card:nth-child(2) { animation-delay: 0.2s; }
-    .card:nth-child(3) { animation-delay: 0.3s; }
-
-    /* Inline form styling */
-    .match-form-row, .reset-form-row {
-        background: rgba(102, 126, 234, 0.1);
-        border-left: 4px solid #667eea;
-    }
-
-    .match-form-container, .reset-form-container {
-        padding: 1.5rem;
-        background: var(--glass-bg);
-        border-radius: 15px;
-        margin: 0.5rem 0;
-        border: 1px solid var(--glass-border);
-    }
-
-    .match-result-form .form-content {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-    }
-
-    .form-header {
-        text-align: center;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        padding-bottom: 1rem;
-    }
-
-    .form-header h6 {
-        margin: 0;
-        color: #667eea;
-        font-weight: 700;
-        font-size: 1.1rem;
-    }
-
-    .teams-display {
-        margin-top: 0.5rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 1rem;
-    }
-
-    .vs-text {
-        font-weight: 700;
-        color: #ffd700;
-        font-size: 1.2rem;
-        text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-    }
-
-    .form-body {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-    }
-
-    .winner-selection .form-label {
-        font-weight: 700;
-        color: #667eea;
-        margin-bottom: 1rem;
-        text-align: center;
-        display: block;
-    }
-
-    .winner-options {
-        display: flex;
-        justify-content: center;
-        gap: 2rem;
-    }
-
-    .winner-options .form-check {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .winner-options .form-check-input {
-        width: 1.5rem;
-        height: 1.5rem;
-        border-radius: 50%;
-        border: 2px solid #667eea;
-        background: transparent;
-    }
-
-    .winner-options .form-check-input:checked {
-        background: #667eea;
-        border-color: #667eea;
-    }
-
-    .winner-options .form-check-label {
-        cursor: pointer;
-        margin: 0;
-    }
-
-    .queen-bonus {
-        text-align: center;
-        padding: 1rem;
-        background: rgba(255, 215, 0, 0.1);
-        border-radius: 10px;
-        border: 1px solid rgba(255, 215, 0, 0.3);
-    }
-
-    .queen-bonus .form-check {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-    }
-
-    .queen-bonus .form-check-input {
-        width: 1.2rem;
-        height: 1.2rem;
-        border: 2px solid #ffd700;
-        background: transparent;
-    }
-
-    .queen-bonus .form-check-input:checked {
-        background: #ffd700;
-        border-color: #ffd700;
-    }
-
-    .queen-bonus .form-check-label {
-        color: #ffd700;
-        font-weight: 600;
-        margin: 0;
-    }
-
-    .form-actions {
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
-        padding-top: 1rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .reset-warning {
-        text-align: center;
-    }
-
-    .reset-warning h6 {
-        color: #f5576c;
-        font-weight: 700;
-        margin-bottom: 1rem;
-    }
-
-    .reset-warning p {
-        color: #ffffff;
-        margin-bottom: 1rem;
-    }
-
-    .reset-actions {
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
-        margin-top: 1rem;
-    }
-
-    .btn-danger {
-        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-        color: #ffffff;
-        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
-    }
-
-    .btn-danger:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(255, 107, 107, 0.6);
-        color: #ffffff;
-    }
-
-    /* Responsive form styling */
-    @media (max-width: 768px) {
-        .winner-options {
-            flex-direction: column;
-            gap: 1rem;
-        }
-        
-        .form-actions {
-            flex-direction: column;
-        }
-        
-        .reset-actions {
-            flex-direction: column;
-        }
-        
-        .teams-display {
-            flex-direction: column;
-            gap: 0.5rem;
-        }
     }
 </style>
 
 <script>
     function toggleMatchForm(matchId) {
         const formRow = document.getElementById('matchForm' + matchId);
-        if (formRow.style.display === 'none' || formRow.style.display === '') {
+        const isVisible = formRow.style.display === 'table-row';
+        
+        // Hide all forms first
+        document.querySelectorAll('.match-form-row, .reset-form-row').forEach(row => {
+            row.style.display = 'none';
+        });
+        
+        // Show the clicked form if it wasn't visible
+        if (!isVisible) {
             formRow.style.display = 'table-row';
             formRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        } else {
-            formRow.style.display = 'none';
         }
     }
 
     function toggleResetForm(matchId) {
         const resetRow = document.getElementById('resetForm' + matchId);
-        if (resetRow.style.display === 'none' || resetRow.style.display === '') {
+        const isVisible = resetRow.style.display === 'table-row';
+        
+        // Hide all forms first
+        document.querySelectorAll('.match-form-row, .reset-form-row').forEach(row => {
+            row.style.display = 'none';
+        });
+        
+        // Show the clicked form if it wasn't visible
+        if (!isVisible) {
             resetRow.style.display = 'table-row';
             resetRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        } else {
-            resetRow.style.display = 'none';
         }
     }
-
-    // Auto-hide forms when clicking outside
-    document.addEventListener('click', function(event) {
-        const matchForms = document.querySelectorAll('.match-form-row');
-        const resetForms = document.querySelectorAll('.reset-form-row');
-        
-        // Check if click is outside any form
-        if (!event.target.closest('.match-form-container') && 
-            !event.target.closest('.reset-form-container') &&
-            !event.target.closest('button')) {
-            
-            matchForms.forEach(form => form.style.display = 'none');
-            resetForms.forEach(form => form.style.display = 'none');
-        }
-    });
 </script>
 
-<div class="container mt-4">
-    <div class="row">
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
         <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="text-white">
-                    <i class="fas fa-chess-board me-2"></i>Tournament Dashboard
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+                <h1 class="gradient-title mb-0">
+                    <i class="fas fa-chess-board me-2 golden-icon"></i>Tournament Dashboard
                 </h1>
-                <div>
-                    <a href="{{ url_for('scoreboard', tournament_id=tournament.id) }}" class="btn btn-warning me-2">
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{{ url_for('scoreboard', tournament_id=tournament.id) }}" class="btn btn-gradient-warning">
                         <i class="fas fa-trophy me-1"></i>Scoreboard
                     </a>
-                    <a href="{{ url_for('download_pdf', tournament_id=tournament.id) }}" class="btn btn-outline-light ms-2">
+                    <a href="{{ url_for('download_pdf', tournament_id=tournament.id) }}" class="btn btn-outline-light">
                         <i class="fas fa-file-pdf me-1"></i>Download PDF
                     </a>
                     <a href="{{ url_for('index') }}" class="btn btn-secondary">
@@ -802,6 +278,7 @@
         </div>
     </div>
     
+    <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
@@ -813,41 +290,50 @@
         {% endif %}
     {% endwith %}
     
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="fas fa-users me-2"></i>Teams</h5>
+    <!-- Teams and Stats -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="card glass-card h-100">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="text-white mb-0">
+                        <i class="fas fa-users me-2 golden-icon"></i>Teams
+                    </h5>
                 </div>
                 <div class="card-body">
-                    {% for team in tournament.teams %}
-                        <div class="mb-3">
-                            <span class="badge team-badge fs-6 me-2">{{ team.name }}</span>
-                            <span>{{ team.players|join(', ') }}</span>
-                        </div>
-                    {% endfor %}
+                    <div class="row g-3">
+                        {% for team in tournament.teams %}
+                            <div class="col-12">
+                                <div class="d-flex flex-column flex-sm-row align-items-start gap-2">
+                                    <span class="badge team-badge">{{ team.name }}</span>
+                                    <span class="text-white-50">{{ team.players|join(', ') }}</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </div>
         
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Tournament Stats</h5>
+        <div class="col-lg-6">
+            <div class="card glass-card h-100">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="text-white mb-0">
+                        <i class="fas fa-chart-bar me-2 golden-icon"></i>Tournament Stats
+                    </h5>
                 </div>
                 <div class="card-body">
-                    <div class="row text-center">
+                    <div class="row text-center g-3">
                         <div class="col-4">
-                            <h4 class="text-primary">{{ tournament.teams|length }}</h4>
-                            <small class="text-muted">Teams</small>
+                            <div class="stat-number">{{ tournament.teams|length }}</div>
+                            <small class="text-white-50 text-uppercase fw-bold">Teams</small>
                         </div>
                         <div class="col-4">
-                            <h4 class="text-success">{{ tournament.matches|length }}</h4>
-                            <small class="text-muted">Total Matches</small>
+                            <div class="stat-number">{{ tournament.matches|length }}</div>
+                            <small class="text-white-50 text-uppercase fw-bold">Total Matches</small>
                         </div>
                         <div class="col-4">
-                            <h4 class="text-info">{{ tournament.completed_matches|length }}</h4>
-                            <small class="text-muted">Completed</small>
+                            <div class="stat-number">{{ tournament.completed_matches|length }}</div>
+                            <small class="text-white-50 text-uppercase fw-bold">Completed</small>
                         </div>
                     </div>
                 </div>
@@ -855,91 +341,100 @@
         </div>
     </div>
     
-    <div class="row mt-4">
+    <!-- Match Schedule -->
+    <div class="row">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0"><i class="fas fa-list me-2"></i>Match Schedule</h5>
+            <div class="card glass-card">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="text-white mb-0">
+                        <i class="fas fa-list me-2 golden-icon"></i>Match Schedule
+                    </h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead class="table-dark">
+                        <table class="table table-glass mb-0">
+                            <thead class="sticky-top">
                                 <tr>
-                                    <th>Match #</th>
-                                    <th>Team 1</th>
-                                    <th>Team 2</th>
-                                    <th>Status</th>
-                                    <th>Result</th>
-                                    <th>Action</th>
+                                    <th class="px-3 py-3">Match #</th>
+                                    <th class="px-3 py-3">Team 1</th>
+                                    <th class="px-3 py-3">Team 2</th>
+                                    <th class="px-3 py-3">Status</th>
+                                    <th class="px-3 py-3">Result</th>
+                                    <th class="px-3 py-3">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for match in tournament.matches %}
-                                    <tr class="{{ 'match-completed' if match.status == 'completed' else 'match-scheduled' }}">
-                                        <td><strong>{{ match.id }}</strong></td>
-                                        <td>
+                                    <tr>
+                                        <td class="px-3 py-3">
+                                            <strong class="text-primary">#{{ match.id }}</strong>
+                                        </td>
+                                        <td class="px-3 py-3">
                                             <span class="badge bg-primary">{{ match.team1 }}</span>
                                         </td>
-                                        <td>
+                                        <td class="px-3 py-3">
                                             <span class="badge bg-primary">{{ match.team2 }}</span>
                                         </td>
-                                        <td>
+                                        <td class="px-3 py-3">
                                             {% if match.status == 'completed' %}
-                                                <span class="badge bg-success">Completed</span>
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-check me-1"></i>Completed
+                                                </span>
                                             {% else %}
-                                                <span class="badge bg-warning">Scheduled</span>
+                                                <span class="badge bg-warning">
+                                                    <i class="fas fa-clock me-1"></i>Scheduled
+                                                </span>
                                             {% endif %}
                                         </td>
-                                        <td>
+                                        <td class="px-3 py-3">
                                             {% if match.status == 'completed' %}
-                                                <strong>{{ match.winner }}</strong>
-                                                {% if match.won_with_queen %}
-                                                    <small class="text-success">(with Queen)</small>
-                                                {% endif %}
+                                                <div class="d-flex flex-column">
+                                                    <strong class="text-success">{{ match.winner }}</strong>
+                                                    {% if match.won_with_queen %}
+                                                        <small class="text-warning">
+                                                            <i class="fas fa-crown me-1"></i>with Queen
+                                                        </small>
+                                                    {% endif %}
+                                                </div>
                                             {% else %}
                                                 <span class="text-muted">Pending</span>
                                             {% endif %}
                                         </td>
-                                        <td>
+                                        <td class="px-3 py-3">
                                             {% if match.status == 'scheduled' %}
-                                                <button class="btn btn-sm btn-success" onclick="toggleMatchForm({{ match.id }})">
-                                                    <i class="fas fa-check me-1"></i>Record Result
+                                                <button class="btn btn-sm btn-gradient-success" onclick="toggleMatchForm({{ match.id }})">
+                                                    <i class="fas fa-check me-1"></i>
+                                                    <span class="d-none d-sm-inline">Record Result</span>
                                                 </button>
                                             {% else %}
-                                                <div class="d-flex gap-2">
-                                                    <span class="text-muted">Match completed</span>
-                                                    <button class="btn btn-sm btn-warning" onclick="toggleResetForm({{ match.id }})">
-                                                        <i class="fas fa-undo me-1"></i>Reset
-                                                    </button>
-                                                </div>
+                                                <button class="btn btn-sm btn-outline-warning" onclick="toggleResetForm({{ match.id }})">
+                                                    <i class="fas fa-undo me-1"></i>
+                                                    <span class="d-none d-sm-inline">Reset</span>
+                                                </button>
                                             {% endif %}
                                         </td>
                                     </tr>
                                     
-                                    <!-- Reset confirmation form -->
+                                    <!-- Reset Form -->
                                     {% if match.status == 'completed' %}
                                         <tr id="resetForm{{ match.id }}" class="reset-form-row" style="display: none;">
-                                            <td colspan="6">
-                                                <div class="reset-form-container">
-                                                    <div class="reset-warning">
-                                                        <h6><i class="fas fa-exclamation-triangle me-2"></i>Reset Match {{ match.id }}</h6>
-                                                        <p>Are you sure you want to reset the result for this match?</p>
+                                            <td colspan="6" class="p-0">
+                                                <div class="form-container mx-3 my-2">
+                                                    <div class="text-center">
+                                                        <h6 class="text-warning mb-3">
+                                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                                            Reset Match {{ match.id }}
+                                                        </h6>
                                                         <div class="alert alert-warning">
-                                                            <strong>Warning:</strong> This will:
-                                                            <ul class="mb-0">
-                                                                <li>Remove the winner: <strong>{{ match.winner }}</strong></li>
-                                                                <li>Reset the match status to "Scheduled"</li>
-                                                                <li>Update the scoreboard (subtract points from {{ match.winner }})</li>
-                                                            </ul>
+                                                            <strong>Warning:</strong> This will reset the match and update the scoreboard.
                                                         </div>
-                                                        <div class="reset-actions">
+                                                        <div class="d-flex justify-content-center gap-2 flex-wrap">
                                                             <button type="button" class="btn btn-secondary btn-sm" onclick="toggleResetForm({{ match.id }})">
                                                                 <i class="fas fa-times me-1"></i>Cancel
                                                             </button>
-                                                            <form method="POST" action="{{ url_for('reset_match_result', tournament_id=tournament.id, match_id=match.id) }}" style="display: inline;">
+                                                            <form method="POST" action="{{ url_for('reset_match_result', tournament_id=tournament.id, match_id=match.id) }}" class="d-inline">
                                                                 <button type="submit" class="btn btn-danger btn-sm">
-                                                                    <i class="fas fa-undo me-1"></i>Yes, Reset Match
+                                                                    <i class="fas fa-undo me-1"></i>Reset Match
                                                                 </button>
                                                             </form>
                                                         </div>
@@ -949,58 +444,65 @@
                                         </tr>
                                     {% endif %}
                                     
-                                    <!-- Inline form for recording result -->
+                                    <!-- Match Result Form -->
                                     {% if match.status == 'scheduled' %}
                                         <tr id="matchForm{{ match.id }}" class="match-form-row" style="display: none;">
-                                            <td colspan="6">
-                                                <div class="match-form-container">
-                                                    <form method="POST" action="{{ url_for('update_match_result', tournament_id=tournament.id, match_id=match.id) }}" class="match-result-form">
-                                                        <div class="form-content">
-                                                            <div class="form-header">
-                                                                <h6><i class="fas fa-trophy me-2"></i>Record Result for Match {{ match.id }}</h6>
-                                                                <div class="teams-display">
-                                                                    <span class="badge bg-primary">{{ match.team1 }}</span>
-                                                                    <span class="vs-text">VS</span>
-                                                                    <span class="badge bg-primary">{{ match.team2 }}</span>
+                                            <td colspan="6" class="p-0">
+                                                <div class="form-container mx-3 my-2">
+                                                    <form method="POST" action="{{ url_for('update_match_result', tournament_id=tournament.id, match_id=match.id) }}">
+                                                        <div class="text-center mb-3">
+                                                            <h6 class="text-primary mb-2">
+                                                                <i class="fas fa-trophy me-2"></i>
+                                                                Record Result for Match {{ match.id }}
+                                                            </h6>
+                                                            <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
+                                                                <span class="badge bg-primary">{{ match.team1 }}</span>
+                                                                <span class="text-warning fw-bold">VS</span>
+                                                                <span class="badge bg-primary">{{ match.team2 }}</span>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="row g-3">
+                                                            <div class="col-12">
+                                                                <label class="form-label text-center d-block text-white fw-bold">
+                                                                    Select Winner:
+                                                                </label>
+                                                                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio" name="winner" value="{{ match.team1 }}" id="team1_{{ match.id }}" required>
+                                                                        <label class="form-check-label" for="team1_{{ match.id }}">
+                                                                            {{ match.team1 }}
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio" name="winner" value="{{ match.team2 }}" id="team2_{{ match.id }}" required>
+                                                                        <label class="form-check-label" for="team2_{{ match.id }}">
+                                                                            {{ match.team2 }}
+                                                                        </label>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                             
-                                                            <div class="form-body">
-                                                                <div class="winner-selection">
-                                                                    <label class="form-label">Select Winner:</label>
-                                                                    <div class="winner-options">
-                                                                        <div class="form-check">
-                                                                            <input class="form-check-input" type="radio" name="winner" value="{{ match.team1 }}" id="team1_{{ match.id }}" required>
-                                                                            <label class="form-check-label" for="team1_{{ match.id }}">
-                                                                                <span class="badge bg-primary">{{ match.team1 }}</span>
-                                                                            </label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <input class="form-check-input" type="radio" name="winner" value="{{ match.team2 }}" id="team2_{{ match.id }}" required>
-                                                                            <label class="form-check-label" for="team2_{{ match.id }}">
-                                                                                <span class="badge bg-primary">{{ match.team2 }}</span>
-                                                                            </label>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                
-                                                                <div class="queen-bonus">
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="checkbox" name="won_with_queen" id="queen_{{ match.id }}">
-                                                                        <label class="form-check-label" for="queen_{{ match.id }}">
+                                                            <div class="col-12">
+                                                                <div class="text-center p-3" style="background: rgba(255, 215, 0, 0.1); border-radius: 10px;">
+                                                                    <div class="form-check d-flex justify-content-center">
+                                                                        <input class="form-check-input me-2" type="checkbox" name="won_with_queen" id="queen_{{ match.id }}">
+                                                                        <label class="form-check-label text-warning" for="queen_{{ match.id }}">
                                                                             <i class="fas fa-crown me-1"></i>Won with Queen (1.5 points)
                                                                         </label>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                             
-                                                            <div class="form-actions">
-                                                                <button type="button" class="btn btn-secondary btn-sm" onclick="toggleMatchForm({{ match.id }})">
-                                                                    <i class="fas fa-times me-1"></i>Cancel
-                                                                </button>
-                                                                <button type="submit" class="btn btn-success btn-sm">
-                                                                    <i class="fas fa-save me-1"></i>Save Result
-                                                                </button>
+                                                            <div class="col-12">
+                                                                <div class="d-flex justify-content-center gap-2 flex-wrap">
+                                                                    <button type="button" class="btn btn-secondary btn-sm" onclick="toggleMatchForm({{ match.id }})">
+                                                                        <i class="fas fa-times me-1"></i>Cancel
+                                                                    </button>
+                                                                    <button type="submit" class="btn btn-gradient-success btn-sm">
+                                                                        <i class="fas fa-save me-1"></i>Save Result
+                                                                    </button>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </form>
@@ -1017,4 +519,5 @@
         </div>
     </div>
 </div>
+
 {% endblock %}
